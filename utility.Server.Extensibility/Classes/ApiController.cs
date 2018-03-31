@@ -46,9 +46,9 @@ namespace Synapse.Custom
             if( ApiMethods == null )
                 ApiMethods = new List<ApiMethod>();
             if( CreateWhoAmIApiMethod )
-                ApiMethods.Insert( 0, new ApiMethod { Name = "WhoAmI", ReturnStub = "\"hi\"" } );
+                ApiMethods.Insert( 0, ApiMethod.CreateWhoAmI() );
             if( CreateHelloApiMethod )
-                ApiMethods.Insert( 0, new ApiMethod { Name = "Hello", ReturnStub = "\"hi\"" } );
+                ApiMethods.Insert( 0, ApiMethod.CreateHello( Name ) );
 
             code = Regex.Replace( code, "~~RoutePrefix~~", $"\"{RoutePrefix}\"" );
             code = Regex.Replace( code, "~~Name~~", Name );
@@ -59,7 +59,7 @@ namespace Synapse.Custom
 
         public static ApiController CreateSample()
         {
-            ApiController sample = new ApiController { Name = "Custom" };
+            ApiController sample = new ApiController { Name = "Custom", RoutePrefix = "my/route" };
             sample.ApiMethods.Add( ApiMethod.CreateSample() );
 
             return sample;

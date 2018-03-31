@@ -11,31 +11,7 @@ namespace Synapse.Server.Extensibility.Utility
         public ApiHttpMethod HttpMethod { get; set; } = ApiHttpMethod.Get;
         public string Route { get; set; }
         public string PlanName { get; set; }
-        public string ReturnStub { get; set; }
-
-        public string ToClassCode_()
-        {
-            if( string.IsNullOrWhiteSpace( Name ) )
-                Name = $"CustomMethod{Utilities.GetSystemGeneratedName()}";
-            if( string.IsNullOrWhiteSpace( Route ) )
-                Route = Name.ToLower();
-            if( string.IsNullOrWhiteSpace( ReturnType ) )
-                ReturnType = "string";
-
-            StringBuilder s = new StringBuilder( 10 );
-            s.Append( $"\t\t[Http{HttpMethod}]\r\n" );
-            s.Append( $"\t\t[Route( \"{Route}\" )]\r\n" );
-            s.Append( $"\t\tpublic {ReturnType} {Name}()\r\n" );
-            s.Append( "\t\t{\r\n" );
-            s.Append( $"\t\t\treturn {ReturnStub};\r\n" );
-            s.Append( "\t\t}\r\n" );
-            //s.Append( $"\t\t{}" );
-            //s.Append( $"\t\t{}" );
-            //s.Append( $"\t\t{}" );
-            //s.Append( $"\t\t{}" );
-
-            return s.Replace( "\t", "    " ).ToString();
-        }
+        public string CodeBlob { get; set; }
 
         public string ToClassCode()
         {
@@ -43,7 +19,7 @@ namespace Synapse.Server.Extensibility.Utility
         [Route( ~~Route~~ )]
         public ~~ReturnType~~ ~~Name~~()
         {
-            return ~~ReturnStub~~;
+            ~~CodeBlob~~
         }
 ";
 
@@ -58,9 +34,19 @@ namespace Synapse.Server.Extensibility.Utility
             code = Regex.Replace( code, "~~Route~~", $"\"{Route}\"" );
             code = Regex.Replace( code, "~~ReturnType~~", ReturnType );
             code = Regex.Replace( code, "~~Name~~", Name );
-            code = Regex.Replace( code, "~~ReturnStub~~", ReturnStub );
+            code = Regex.Replace( code, "~~CodeBlob~~", CodeBlob );
 
             return code;
+        }
+
+        public static ApiMethod CreateHello(string helloFrom)
+        {
+            return new ApiMethod { Name = "Hello", Route = "hello", CodeBlob = $"return \"Hello from {helloFrom}Controller, World!\";" };
+        }
+
+        public static ApiMethod CreateWhoAmI()
+        {
+            return new ApiMethod { Name = "WhoAmI", Route = "hello/whoami", CodeBlob = "return ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).WhoAmI();" };
         }
 
         public static ApiMethod CreateSample()
@@ -68,8 +54,8 @@ namespace Synapse.Server.Extensibility.Utility
             ApiMethod sample = new ApiMethod
             {
                 Name = "MyCustomMethod",
-                Route = "/custompath",
-                ReturnStub = "\"foo\""
+                Route = "custom/path",
+                CodeBlob = "return \"foo\";"
             };
 
             return sample;
