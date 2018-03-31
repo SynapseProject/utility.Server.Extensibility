@@ -143,7 +143,12 @@ namespace Synapse.Custom
 
         IExecuteController GetExecuteControllerInstance()
         {
-            return ExtensibilityUtility.GetExecuteControllerInstance( Url, User, Request?.Headers?.Authorization );
+            System.Net.Http.Headers.AuthenticationHeaderValue auth = null;
+            if( Request != null )
+                if( Request.Headers != null )
+                    auth = Request.Headers.Authorization;
+
+            return ExtensibilityUtility.GetExecuteControllerInstance( Url, User, auth );
         }
 
         object CallPlan(string planUniqueName, string path = "Actions[0]:Result:ExitData",

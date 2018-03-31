@@ -22,5 +22,9 @@ namespace Synapse.Server.Extensibility.Utility
             return Regex.Replace( s, "(?:[^a-zA-Z0-9])", string.Empty ).Substring( 0, 8 );
         }
 
+        public static string FormatString(this bool value, string trueString = "T", string falseString = "F")
+        {
+            return value ? trueString : falseString;
+        }
     }
 }

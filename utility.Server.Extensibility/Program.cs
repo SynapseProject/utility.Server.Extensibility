@@ -12,7 +12,22 @@ namespace Synapse.Server.Extensibility.Utility
     {
         static void Main(string[] args)
         {
-            CreateSample();
+            if( args.Length == 0 )
+                WriteHelpAndExit();
+            else
+            {
+                string parm = args[0].ToLower();
+                if( parm == "sample" )
+                    CreateSample();
+                else if( File.Exists( parm ) )
+                {
+                    GeneratorSettings gs = GeneratorSettings.Deserialize( parm );
+                    gs.Validate();
+                    CreateAssembly( gs );
+                }
+                else
+                    WriteHelpAndExit();
+            }
         }
 
         static void CreateAssembly(GeneratorSettings gs)
@@ -30,7 +45,9 @@ namespace Synapse.Server.Extensibility.Utility
                 gs.Compiler.ToCompilerParameters( gs.OutputAssembly ), gs.Files.ToArray() );
 
             foreach( CompilerError err in results.Errors )
-                Console.WriteLine( err.ErrorText );
+                Console.WriteLine( $"[{err.IsWarning.FormatString( "Warning", "->Error" )}: ln {err.Line}/col {err.Column}]  Msg: {err.ErrorText}" );
+
+            Console.WriteLine();
 
             if( gs.CreateMakeFile )
                 gs.SerializeMakeFile();
@@ -49,6 +66,14 @@ namespace Synapse.Server.Extensibility.Utility
             gs.SerializeSample();
 
             CreateAssembly( gs );
+        }
+
+        static void WriteHelpAndExit()
+        {
+            Console.WriteLine( "Syntax: MakeAssembly.exe {path to settings file}|sample" );
+            Console.WriteLine( "        sample: Will generate sample settings file.\r\n" );
+
+            Environment.Exit( 0 );
         }
     }
 }

@@ -70,7 +70,8 @@ namespace Synapse.Server.Extensibility.Utility
             {
                 Name = "MyCustomMethod",
                 Route = "custom/path",
-                PlanName = "SomethingWonderful",
+                PlanName = "sampleHtml",
+                ReturnType = "object",
                 CodeBlob = "string foo = \"foo\";",
                 Options = new ApiMethodOptions
                 {

@@ -68,5 +68,10 @@ namespace Synapse.Server.Extensibility.Utility
 
             YamlHelpers.SerializeFile( $"{OutputAssembly}.yaml", clone );
         }
+
+        public static GeneratorSettings Deserialize(string path)
+        {
+            return YamlHelpers.DeserializeFile<GeneratorSettings>( path );
+        }
     }
 }
