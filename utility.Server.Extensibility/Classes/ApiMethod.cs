@@ -38,7 +38,7 @@ namespace Synapse.Server.Extensibility.Utility
             if( !string.IsNullOrWhiteSpace( PlanName ) )
             {
                 plan = @"return (~~ReturnType~~)CallPlan( planUniqueName: ~~planUniqueName~~~~options~~);";
-                plan = Regex.Replace( plan, "~~planUniqueName~~", $"{PlanName}" );
+                plan = Regex.Replace( plan, "~~planUniqueName~~", $"\"{PlanName}\"" );
                 plan = Regex.Replace( plan, "~~options~~", HasOptions ? Options.ToString() : null );
                 if( !string.IsNullOrWhiteSpace( CodeBlob ) )
                     plan = "\r\n\r\n            " + plan;
@@ -96,16 +96,21 @@ namespace Synapse.Server.Extensibility.Utility
         public override string ToString()
         {
             List<string> v = new List<string>();
-            string path = !string.IsNullOrWhiteSpace( Path ) && Path != "Actions[0]:Result:ExitData" ? $"path: \"{Path}\"" : null;
-            string st = SerializationType != SerializationType.Json ? $"serializationType: {SerializationType}" : null;
-            string sct = SetContentType ? null : $"setContentType: {SetContentType}";
-            string pi = PollingIntervalSeconds == 1 ? null : $"pollingIntervalSeconds: {PollingIntervalSeconds}";
-            string ts = TimeoutSeconds == 120 ? null : $"timeoutSeconds: {TimeoutSeconds}";
-            string nru = !string.IsNullOrWhiteSpace( NodeRootUrl ) ? $"nodeRootUrl: \"{NodeRootUrl}\"" : null;
 
-            string vars = ", " + string.Join( ", ", new string[] { path, st, sct, pi, ts, nru } ) + " ";
+            if( !string.IsNullOrWhiteSpace( Path ) && Path != "Actions[0]:Result:ExitData" )
+                v.Add( $"path: \"{Path}\"" );
+            if( SerializationType != SerializationType.Json )
+                v.Add( $"serializationType: SerializationType.{SerializationType}" );
+            if( !SetContentType )
+                v.Add( $"setContentType: {SetContentType}" );
+            if( PollingIntervalSeconds != 1 )
+                v.Add( $"pollingIntervalSeconds: {PollingIntervalSeconds}" );
+            if( TimeoutSeconds != 120 )
+                v.Add( $"timeoutSeconds: {TimeoutSeconds}" );
+            if( !string.IsNullOrWhiteSpace( NodeRootUrl ) )
+                v.Add( $"nodeRootUrl: \"{NodeRootUrl}\"" );
 
-            return vars;
+            return ", " + string.Join( ", ", v.ToArray() ) + " ";
         }
     }
 }
