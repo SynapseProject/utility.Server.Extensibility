@@ -8,10 +8,11 @@ namespace Synapse.Server.Extensibility.Utility
 {
     public class ApiMethod
     {
-        public string Name { get; set; }
-        public string ReturnType { get; set; } = "string";
         public ApiHttpMethod HttpMethod { get; set; } = ApiHttpMethod.Get;
         public string Route { get; set; }
+        public string ReturnType { get; set; } = "string";
+        public string Name { get; set; }
+        public string Parms { get; set; }
         public string PlanName { get; set; }
         public string CodeBlob { get; set; }
         public ApiMethodOptions Options { get; set; }
@@ -21,7 +22,7 @@ namespace Synapse.Server.Extensibility.Utility
         {
             string code = @"        [Http~~HttpMethod~~]
         [Route( ~~Route~~ )]
-        public ~~ReturnType~~ ~~Name~~()
+        public ~~ReturnType~~ ~~Name~~(~~parms~~)
         {
             ~~CodeBlob~~~~plan~~
         }
@@ -49,6 +50,7 @@ namespace Synapse.Server.Extensibility.Utility
             code = Regex.Replace( code, "~~Route~~", $"\"{Route}\"" );
             code = Regex.Replace( code, "~~ReturnType~~", ReturnType );
             code = Regex.Replace( code, "~~Name~~", Name );
+            code = Regex.Replace( code, "~~parms~~", $"{Parms}" );
             code = Regex.Replace( code, "~~CodeBlob~~", !string.IsNullOrWhiteSpace( CodeBlob ) ? CodeBlob : string.Empty );
 
             return code;
@@ -68,10 +70,11 @@ namespace Synapse.Server.Extensibility.Utility
         {
             ApiMethod sample = new ApiMethod
             {
-                Name = "MyCustomMethod",
                 Route = "custom/path",
-                PlanName = "sampleHtml",
                 ReturnType = "object",
+                Name = "MyCustomMethod",
+                Parms = "string aaa, string bbb, string ccc = \"foo\"",
+                PlanName = "sampleHtml",
                 CodeBlob = "string foo = \"foo\";",
                 Options = new ApiMethodOptions
                 {
