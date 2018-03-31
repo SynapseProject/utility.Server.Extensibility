@@ -58,6 +58,24 @@ namespace Synapse.Server.Extensibility.Utility
             return code;
         }
 
+        public string SplitParmsToDict(string parms)
+        {
+            if( string.IsNullOrWhiteSpace( parms ) )
+                return string.Empty;
+
+            string result = string.Empty;
+
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            string[] pa = parms.Split( ',' );
+            foreach( string p in pa )
+            {
+                string[] pe = p.Split( ' ' );
+                list[p] = p;
+            }
+
+            return result;
+        }
+
         public static ApiMethod CreateHello(string helloFrom)
         {
             return new ApiMethod { Name = "Hello", Route = "hello", CodeBlob = $"return \"Hello from {helloFrom}Controller, World!\";" };
