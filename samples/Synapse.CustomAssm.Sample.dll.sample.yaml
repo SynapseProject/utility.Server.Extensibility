@@ -1,0 +1,34 @@
+OutputAssembly: Synapse.CustomAssm.Sample.dll
+CreateMakeFile: true
+ApiControllers:
+- Name: Custom
+  RoutePrefix: my/route
+  CreateHelloApiMethod: true
+  CreateWhoAmIApiMethod: true
+  ApiMethods:
+  - Route: custom/path
+    ReturnType: object
+    Name: MyCustomMethod
+    PlanName: sampleHtml
+    CodeBlob: string foo = "foo";
+    Options:
+      Path: Actions[0]:Result:ExitData
+      SerializationType: Html
+      SetContentType: true
+      PollingIntervalSeconds: 2
+      TimeoutSeconds: 10
+  - Route: custom/path2
+    ReturnType: object
+    Name: MyCustomMethod2
+    Parms: string aaa, string bbb, string ccc = "foo"
+    PlanName: samplePs1
+    Options:
+      Path: Actions[0]:Result:ExitData
+      SerializationType: Unspecified
+  - Route: custom/{route}/path
+    ReturnType: long
+    Name: MyCustomMethod3
+    Parms: string route, string aaa, string bbb, string ccc = "foo"
+    PlanName: samplePs1
+    HttpMethod: Post
+    ExecuteAsync: true

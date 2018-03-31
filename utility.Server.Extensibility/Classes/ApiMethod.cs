@@ -14,6 +14,7 @@ namespace Synapse.Server.Extensibility.Utility
         public string Name { get; set; }
         public string Parms { get; set; }
         public string PlanName { get; set; }
+        public bool ExecuteAsync { get; set; }
         public string CodeBlob { get; set; }
         public ApiMethodOptions Options { get; set; }
         bool HasOptions { get { return Options != null; } }
@@ -38,9 +39,10 @@ namespace Synapse.Server.Extensibility.Utility
             string plan = string.Empty;
             if( !string.IsNullOrWhiteSpace( PlanName ) )
             {
-                plan = @"return (~~ReturnType~~)CallPlan( planUniqueName: ~~planUniqueName~~~~options~~);";
+                plan = @"return (~~ReturnType~~)StartPlan( planUniqueName: ~~planUniqueName~~~~options~~~~async~~ );";
                 plan = Regex.Replace( plan, "~~planUniqueName~~", $"\"{PlanName}\"" );
-                plan = Regex.Replace( plan, "~~options~~", HasOptions ? Options.ToString() : null );
+                plan = Regex.Replace( plan, "~~options~~", HasOptions ? Options.ToString() : string.Empty );
+                plan = Regex.Replace( plan, "~~async~~", ExecuteAsync ? ", executeAsync: true" : string.Empty );
                 if( !string.IsNullOrWhiteSpace( CodeBlob ) )
                     plan = "\r\n\r\n            " + plan;
             }
@@ -114,7 +116,7 @@ namespace Synapse.Server.Extensibility.Utility
             if( !string.IsNullOrWhiteSpace( NodeRootUrl ) )
                 v.Add( $"nodeRootUrl: \"{NodeRootUrl}\"" );
 
-            return ", " + string.Join( ", ", v.ToArray() ) + " ";
+            return ", " + string.Join( ", ", v.ToArray() );
         }
     }
 }

@@ -1,0 +1,26 @@
+Name: samplePs1
+Description: Simple call to powershell
+Actions:
+- Name: Action001
+  Handler:
+    Type: Synapse.Handlers.CommandLine:CommandHandler
+    Config:
+      Values:
+        WorkingDirectory: .\_Samples
+        Command: powershell.exe
+        TimeoutMills: 5000
+        TimeoutStatus: Failed
+  Parameters:
+    Values:
+      Arguments: -ExecutionPolicy Bypass -File .\echoParms.ps1 -p1 aaa -p2 bbb -p3 ccc
+    Dynamic:
+    - Source: aaa
+      Target: Arguments
+      Replace: aaa
+    - Source: route
+      Target: Arguments
+      Replace: bbb
+    - Source: requestBody
+      Target: Arguments
+      Replace: ccc
+      Encode: Base64
