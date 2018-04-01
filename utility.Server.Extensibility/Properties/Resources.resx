@@ -151,15 +151,19 @@ namespace Synapse.Custom
             return ExtensibilityUtility.GetExecuteControllerInstance( Url, User, auth );
         }
 
-        object StartPlan(string planUniqueName, string path = "Actions[0]:Result:ExitData",
-            SerializationType serializationType = SerializationType.Json, bool setContentType = true,
-            int pollingIntervalSeconds = 1, int timeoutSeconds = 120, string nodeRootUrl = null, bool executeAsync = false)
+        object StartPlan(string planUniqueName, Dictionary&lt;string, string&gt; list = parms,
+            string path = "Actions[0]:Result:ExitData", SerializationType serializationType = SerializationType.Json,
+            bool setContentType = true, int pollingIntervalSeconds = 1, int timeoutSeconds = 120, string nodeRootUrl = null, bool executeAsync = false)
         {
             StartPlanEnvelope pe = new StartPlanEnvelope { DynamicParameters = new Dictionary&lt;string, string&gt;( StringComparer.OrdinalIgnoreCase ) };
 
             IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt; queryString = this.Request.GetQueryNameValuePairs();
             foreach( KeyValuePair&lt;string, string&gt; kvp in queryString )
                 pe.DynamicParameters.Add( kvp.Key, kvp.Value );
+
+            if( parms != null )
+                foreach( KeyValuePair&lt;string, string&gt; kvp in parms )
+                    pe.DynamicParameters[kvp.Key] = kvp.Value;
 
             string body = "body";
             if( Url.Request.Properties.ContainsKey( body ) &amp;&amp; Url.Request.Properties[body] != null )

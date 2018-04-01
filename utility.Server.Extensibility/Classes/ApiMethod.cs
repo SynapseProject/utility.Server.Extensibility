@@ -25,7 +25,7 @@ namespace Synapse.Server.Extensibility.Utility
         [Route( ~~Route~~ )]
         public ~~ReturnType~~ ~~Name~~(~~parms~~)
         {
-            ~~CodeBlob~~~~plan~~
+            ~~pd~~~~CodeBlob~~~~plan~~
         }
 ";
 
@@ -39,7 +39,7 @@ namespace Synapse.Server.Extensibility.Utility
             string plan = string.Empty;
             if( !string.IsNullOrWhiteSpace( PlanName ) )
             {
-                plan = @"return (~~ReturnType~~)StartPlan( planUniqueName: ~~planUniqueName~~~~options~~~~async~~ );";
+                plan = @"return (~~ReturnType~~)StartPlan( planUniqueName: ~~planUniqueName~~~~pdp~~~~options~~~~async~~ );";
                 plan = Regex.Replace( plan, "~~planUniqueName~~", $"\"{PlanName}\"" );
                 plan = Regex.Replace( plan, "~~options~~", HasOptions ? Options.ToString() : string.Empty );
                 plan = Regex.Replace( plan, "~~async~~", ExecuteAsync ? ", executeAsync: true" : string.Empty );
@@ -53,27 +53,31 @@ namespace Synapse.Server.Extensibility.Utility
             code = Regex.Replace( code, "~~ReturnType~~", ReturnType );
             code = Regex.Replace( code, "~~Name~~", Name );
             code = Regex.Replace( code, "~~parms~~", $"{Parms}" );
+            string pd = SplitParmsToDict( Parms );
+            code = Regex.Replace( code, "~~pd~~", pd );
+            string pdp = !string.IsNullOrWhiteSpace( pd ) ? ", parms: parms" : string.Empty;
+            code = Regex.Replace( code, "~~pdp~~", pdp );
             code = Regex.Replace( code, "~~CodeBlob~~", !string.IsNullOrWhiteSpace( CodeBlob ) ? CodeBlob : string.Empty );
 
             return code;
         }
 
-        public string SplitParmsToDict(string parms)
+        public string SplitParmsToDict(string methodParameters)
         {
-            if( string.IsNullOrWhiteSpace( parms ) )
+            if( string.IsNullOrWhiteSpace( methodParameters ) )
                 return string.Empty;
 
-            string result = string.Empty;
-
-            Dictionary<string, string> list = new Dictionary<string, string>();
-            string[] pa = parms.Split( ',' );
-            foreach( string p in pa )
+            StringBuilder code = new StringBuilder();
+            code.AppendLine( "Dictionary<string, string> parms = new Dictionary<string, string>();" );
+            string[] parms = methodParameters.Split( ',' );
+            foreach( string parm in parms )
             {
-                string[] pe = p.Split( ' ' );
-                list[p] = p;
+                string[] p = parm.Trim().Split( ' ' );
+                code.AppendLine( $"            parms[\"{p[1]}\"] = string.Format( \"{{{0}}}\", {p[1]} );" );
             }
+            code.Append( "\r\n            " );
 
-            return result;
+            return code.ToString();
         }
 
         public static ApiMethod CreateHello(string helloFrom)
