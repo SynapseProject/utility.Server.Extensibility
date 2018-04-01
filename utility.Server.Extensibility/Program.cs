@@ -16,9 +16,12 @@ namespace Synapse.Server.Extensibility.Utility
                 WriteHelpAndExit();
             else
             {
-                string parm = args[0].ToLower();
-                if( parm == "sample" )
-                    CreateSample();
+                string parm = args[0];
+                if( parm.Equals( "sample", StringComparison.OrdinalIgnoreCase ) )
+                {
+                    bool verbose = args.Length > 1 && args[1].Equals( "verbose", StringComparison.OrdinalIgnoreCase );
+                    CreateSample( verbose );
+                }
                 else if( File.Exists( parm ) )
                 {
                     GeneratorSettings gs = GeneratorSettings.Deserialize( parm );
@@ -32,24 +35,34 @@ namespace Synapse.Server.Extensibility.Utility
 
         static void CreateAssembly(GeneratorSettings gs)
         {
+            ConsoleColor defaultColor = Console.ForegroundColor;
+
             foreach( ApiController c in gs.ApiControllers )
             {
                 string code = c.ToClassCode();
-                c.Name = $"{c.Name}.cs";
-                if( !gs.Files.Contains( c.Name, StringComparer.OrdinalIgnoreCase ) )
-                    gs.Files.Add( c.Name );
-                File.WriteAllText( c.Name, code );
+                string name = $"{c.Name}.cs";
+                if( !gs.Files.Contains( name, StringComparer.OrdinalIgnoreCase ) )
+                    gs.Files.Add( name );
+                File.WriteAllText( name, code );
+                Console_WriteLine( $"Created {name}.", ConsoleColor.Cyan );
             }
+            Console.WriteLine();
 
             CompilerResults results = new CSharpCodeProvider().CompileAssemblyFromFile(
                 gs.Compiler.ToCompilerParameters( gs.OutputAssembly ), gs.Files.ToArray() );
 
-            ConsoleColor defaultColor = Console.ForegroundColor;
             foreach( CompilerError err in results.Errors )
                 Console_WriteLine( $"[{err.IsWarning.FormatString( "Warning", "-Error-" )}: ln {err.Line}/col {err.Column}]  {err.ErrorText}",
                     err.IsWarning ? ConsoleColor.Yellow : ConsoleColor.Red );
-            Console.ForegroundColor = defaultColor;
             Console.WriteLine();
+
+            if( !results.Errors.HasErrors && File.Exists( gs.OutputAssembly ) )
+            {
+                Console_WriteLine( $"Created {gs.OutputAssembly}.", ConsoleColor.Green );
+                Console.WriteLine();
+            }
+            Console.ForegroundColor = defaultColor;
+
 
             if( gs.CreateMakeFile )
                 gs.SerializeMakeFile();
@@ -61,7 +74,7 @@ namespace Synapse.Server.Extensibility.Utility
             Console.WriteLine( s, args );
         }
 
-        static void CreateSample()
+        static void CreateSample(bool verbose)
         {
             GeneratorSettings gs = new GeneratorSettings
             {
@@ -71,14 +84,15 @@ namespace Synapse.Server.Extensibility.Utility
 
             gs.Validate();
             gs.ApiControllers.Add( ApiController.CreateSample() );
-            gs.SerializeSample();
 
             CreateAssembly( gs );
+
+            gs.SerializeSample( verbose );
         }
 
         static void WriteHelpAndExit()
         {
-            Console.WriteLine( "Syntax: MakeAssembly.exe {path to settings file}|sample" );
+            Console.WriteLine( "Syntax: MakeAssembly.exe {path to settings file}|sample [verbose]" );
             Console.WriteLine( "        sample: Will generate sample settings file.\r\n" );
 
             Environment.Exit( 0 );

@@ -41,7 +41,7 @@ namespace Synapse.Server.Extensibility.Utility
                 Files = new List<string>();
         }
 
-        public void SerializeSample()
+        public void SerializeSample(bool verbose = false)
         {
             GeneratorSettings clone = new GeneratorSettings
             {
@@ -52,7 +52,7 @@ namespace Synapse.Server.Extensibility.Utility
                 Files = null
             };
 
-            YamlHelpers.SerializeFile( $"{OutputAssembly}.sample.yaml", clone );
+            YamlHelpers.SerializeFile( $"{OutputAssembly}.sample.yaml", verbose ? this : clone, emitDefaultValues: verbose );
         }
 
         public void SerializeMakeFile()

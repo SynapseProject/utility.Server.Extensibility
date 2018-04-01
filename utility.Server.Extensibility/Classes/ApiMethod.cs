@@ -94,10 +94,10 @@ namespace Synapse.Server.Extensibility.Utility
         {
             ApiMethod sample = new ApiMethod
             {
-                Route = "custom/path",
+                Route = "{interesting}/path",
                 ReturnType = "object",
                 Name = "MyCustomMethod",
-                Parms = "string aaa, string bbb, string ccc = \"foo\"",
+                Parms = "string interesting, string aaa, string bbb, string ccc = \"foo\"",
                 PlanName = "sampleHtml",
                 CodeBlob = "string foo = \"foo\";",
                 Options = new ApiMethodOptions
