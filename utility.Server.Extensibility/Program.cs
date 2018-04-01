@@ -44,13 +44,21 @@ namespace Synapse.Server.Extensibility.Utility
             CompilerResults results = new CSharpCodeProvider().CompileAssemblyFromFile(
                 gs.Compiler.ToCompilerParameters( gs.OutputAssembly ), gs.Files.ToArray() );
 
+            ConsoleColor defaultColor = Console.ForegroundColor;
             foreach( CompilerError err in results.Errors )
-                Console.WriteLine( $"[{err.IsWarning.FormatString( "Warning", "->Error" )}: ln {err.Line}/col {err.Column}]  Msg: {err.ErrorText}" );
-
+                Console_WriteLine( $"[{err.IsWarning.FormatString( "Warning", "-Error-" )}: ln {err.Line}/col {err.Column}]  {err.ErrorText}",
+                    err.IsWarning ? ConsoleColor.Yellow : ConsoleColor.Red );
+            Console.ForegroundColor = defaultColor;
             Console.WriteLine();
 
             if( gs.CreateMakeFile )
                 gs.SerializeMakeFile();
+        }
+
+        static void Console_WriteLine(string s, ConsoleColor color, params object[] args)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine( s, args );
         }
 
         static void CreateSample()

@@ -151,7 +151,7 @@ namespace Synapse.Custom
             return ExtensibilityUtility.GetExecuteControllerInstance( Url, User, auth );
         }
 
-        object StartPlan(string planUniqueName, Dictionary&lt;string, string&gt; list = parms,
+        object StartPlan(string planUniqueName, Dictionary&lt;string, string&gt; parms = null,
             string path = "Actions[0]:Result:ExitData", SerializationType serializationType = SerializationType.Json,
             bool setContentType = true, int pollingIntervalSeconds = 1, int timeoutSeconds = 120, string nodeRootUrl = null, bool executeAsync = false)
         {
