@@ -30,22 +30,30 @@ namespace Synapse.Custom
         [Route( "hello/whoami" )]
         public string WhoAmI()
         {
-            return GetExecuteControllerInstance().WhoAmI();
+            return ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).WhoAmI();
         }
 
         [HttpGet]
-        [Route( "{interesting}/path" )]
-        public object MyCustomMethod(string interesting, string aaa, string bbb, string ccc = "foo")
+        [Route( "custom/path" )]
+        public object MyCustomMethod()
         {
-            Dictionary<string, string> parms = new Dictionary<string, string>( StringComparer.OrdinalIgnoreCase );
-            parms["interesting"] = string.Format( "{0}", interesting );
-            parms["aaa"] = string.Format( "{0}", aaa );
-            parms["bbb"] = string.Format( "{0}", bbb );
-            parms["ccc"] = string.Format( "{0}", ccc );
-
             string foo = "foo";
 
-            return (object)StartPlan( planUniqueName: "sampleHtml", parms: parms, serializationType: SerializationType.Html, pollingIntervalSeconds: 2, timeoutSeconds: 10 );
+            return (object)StartPlan( planUniqueName: "sampleHtml", serializationType: SerializationType.Html, pollingIntervalSeconds: 2, timeoutSeconds: 10 );
+        }
+
+        [HttpGet]
+        [Route( "custom/path2" )]
+        public object MyCustomMethod2(string aaa, string bbb, string ccc = "foo")
+        {
+            return (object)StartPlan( planUniqueName: "samplePs1", serializationType: SerializationType.Unspecified );
+        }
+
+        [HttpPost]
+        [Route( "custom/{route}/path" )]
+        public long MyCustomMethod3(string route, string aaa, string bbb, string ccc = "foo")
+        {
+            return (long)StartPlan( planUniqueName: "samplePs1", executeAsync: true );
         }
 
         IExecuteController GetExecuteControllerInstance()
@@ -58,19 +66,15 @@ namespace Synapse.Custom
             return ExtensibilityUtility.GetExecuteControllerInstance( Url, User, auth );
         }
 
-        object StartPlan(string planUniqueName, Dictionary<string, string> parms = null,
-            string path = "Actions[0]:Result:ExitData", SerializationType serializationType = SerializationType.Json,
-            bool setContentType = true, int pollingIntervalSeconds = 1, int timeoutSeconds = 120, string nodeRootUrl = null, bool executeAsync = false)
+        object StartPlan(string planUniqueName, string path = "Actions[0]:Result:ExitData",
+            SerializationType serializationType = SerializationType.Json, bool setContentType = true,
+            int pollingIntervalSeconds = 1, int timeoutSeconds = 120, string nodeRootUrl = null, bool executeAsync = false)
         {
             StartPlanEnvelope pe = new StartPlanEnvelope { DynamicParameters = new Dictionary<string, string>( StringComparer.OrdinalIgnoreCase ) };
 
             IEnumerable<KeyValuePair<string, string>> queryString = this.Request.GetQueryNameValuePairs();
             foreach( KeyValuePair<string, string> kvp in queryString )
                 pe.DynamicParameters.Add( kvp.Key, kvp.Value );
-
-            if( parms != null )
-                foreach( KeyValuePair<string, string> kvp in parms )
-                    pe.DynamicParameters[kvp.Key] = kvp.Value;
 
             string body = "body";
             if( Url.Request.Properties.ContainsKey( body ) && Url.Request.Properties[body] != null )

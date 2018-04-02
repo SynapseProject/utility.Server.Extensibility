@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+
 using Synapse.Server.Extensibility.Utility.Properties;
+
 
 namespace Synapse.Server.Extensibility.Utility
 {
@@ -24,10 +27,20 @@ namespace Synapse.Server.Extensibility.Utility
                 RoutePrefix = Name.ToLower();
             if( ApiMethods == null )
                 ApiMethods = new List<ApiMethod>();
+
             if( CreateWhoAmIApiMethod )
-                ApiMethods.Insert( 0, ApiMethod.CreateWhoAmI() );
+            {
+                ApiMethod m = ApiMethod.CreateWhoAmI();
+                if( !ApiMethods.Exists( a => a.Name == m.Name ) )
+                    ApiMethods.Insert( 0, m );
+            }
+
             if( CreateHelloApiMethod )
-                ApiMethods.Insert( 0, ApiMethod.CreateHello( Name ) );
+            {
+                ApiMethod m = ApiMethod.CreateHello( Name );
+                if( !ApiMethods.Exists( a => a.Name == m.Name ) )
+                    ApiMethods.Insert( 0, m );
+            }
 
             code = Regex.Replace( code, "~~RoutePrefix~~", $"\"{RoutePrefix}\"" );
             code = Regex.Replace( code, "~~Name~~", Name );
@@ -38,7 +51,11 @@ namespace Synapse.Server.Extensibility.Utility
 
         public static ApiController CreateSample()
         {
-            ApiController sample = new ApiController { Name = "Custom", RoutePrefix = "my/route" };
+            ApiController sample = new ApiController
+            {
+                Name = "Custom",
+                RoutePrefix = "my/route"
+            };
             sample.ApiMethods.Add( ApiMethod.CreateSample() );
 
             return sample;

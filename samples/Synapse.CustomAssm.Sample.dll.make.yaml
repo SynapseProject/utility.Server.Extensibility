@@ -1,0 +1,14 @@
+OutputAssembly: Synapse.CustomAssm.Sample.dll
+Compiler:
+  WarningLevel: 3
+  CompilerOptions: /optimize
+  ReferencedAssemblies:
+  - Newtonsoft.Json.dll
+  - Synapse.Core.dll
+  - Synapse.Server.Extensibility.dll
+  - System.Net.Http.dll
+  - System.Net.Http.Formatting.dll
+  - System.Web.Http.dll
+  - YamlDotNet.dll
+Files:
+- Synapse.CustomAssm.Sample\Custom.cs

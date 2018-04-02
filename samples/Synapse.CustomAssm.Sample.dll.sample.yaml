@@ -1,15 +1,56 @@
 OutputAssembly: Synapse.CustomAssm.Sample.dll
 CreateMakeFile: true
+Compiler:
+  WarningLevel: 3
+  TreatWarningsAsErrors: false
+  IncludeDebugInformation: false
+  CompilerOptions: /optimize
+  CoreAssemblyFileName: 
+  Win32Resource: 
+  ReferencedAssemblies:
+  - Newtonsoft.Json.dll
+  - Synapse.Core.dll
+  - Synapse.Server.Extensibility.dll
+  - System.Net.Http.dll
+  - System.Net.Http.Formatting.dll
+  - System.Web.Http.dll
+  - YamlDotNet.dll
+  LinkedResources: 
+  EmbeddedResources: 
+Files:
+- Synapse.CustomAssm.Sample\Custom.cs
 ApiControllers:
 - Name: Custom
   RoutePrefix: my/route
   CreateHelloApiMethod: true
   CreateWhoAmIApiMethod: true
+  CreateClassFileOnly: false
   ApiMethods:
-  - Route: custom/path
+  - HttpMethod: Get
+    Route: hello
+    ReturnType: string
+    Name: Hello
+    Parms: 
+    PlanName: 
+    ExecuteAsync: false
+    CodeBlob: return "Hello from CustomController, World!";
+    Options: 
+  - HttpMethod: Get
+    Route: hello/whoami
+    ReturnType: string
+    Name: WhoAmI
+    Parms: 
+    PlanName: 
+    ExecuteAsync: false
+    CodeBlob: return GetExecuteControllerInstance().WhoAmI();
+    Options: 
+  - HttpMethod: Get
+    Route: '{interesting}/path'
     ReturnType: object
     Name: MyCustomMethod
+    Parms: string interesting, string aaa, string bbb, string ccc = "foo"
     PlanName: sampleHtml
+    ExecuteAsync: false
     CodeBlob: string foo = "foo";
     Options:
       Path: Actions[0]:Result:ExitData
@@ -17,18 +58,4 @@ ApiControllers:
       SetContentType: true
       PollingIntervalSeconds: 2
       TimeoutSeconds: 10
-  - Route: custom/path2
-    ReturnType: object
-    Name: MyCustomMethod2
-    Parms: string aaa, string bbb, string ccc = "foo"
-    PlanName: samplePs1
-    Options:
-      Path: Actions[0]:Result:ExitData
-      SerializationType: Unspecified
-  - Route: custom/{route}/path
-    ReturnType: long
-    Name: MyCustomMethod3
-    Parms: string route, string aaa, string bbb, string ccc = "foo"
-    PlanName: samplePs1
-    HttpMethod: Post
-    ExecuteAsync: true
+      NodeRootUrl: 

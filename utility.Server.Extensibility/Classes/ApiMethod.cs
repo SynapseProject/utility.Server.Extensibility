@@ -68,7 +68,7 @@ namespace Synapse.Server.Extensibility.Utility
                 return string.Empty;
 
             StringBuilder code = new StringBuilder();
-            code.AppendLine( "Dictionary<string, string> parms = new Dictionary<string, string>();" );
+            code.AppendLine( "Dictionary<string, string> parms = new Dictionary<string, string>( StringComparer.OrdinalIgnoreCase );" );
             string[] parms = methodParameters.Split( ',' );
             foreach( string parm in parms )
             {
@@ -87,7 +87,7 @@ namespace Synapse.Server.Extensibility.Utility
 
         public static ApiMethod CreateWhoAmI()
         {
-            return new ApiMethod { Name = "WhoAmI", Route = "hello/whoami", CodeBlob = "return ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).WhoAmI();" };
+            return new ApiMethod { Name = "WhoAmI", Route = "hello/whoami", CodeBlob = "return GetExecuteControllerInstance().WhoAmI();" };
         }
 
         public static ApiMethod CreateSample()

@@ -11,12 +11,18 @@ namespace Synapse.Server.Extensibility.Utility
         public List<string> Files { get; set; } = new List<string>();
         public List<ApiController> ApiControllers { get; set; } = new List<ApiController>();
 
+        [YamlDotNet.Serialization.YamlIgnore]
+        public string OutputFolder { get; private set; }
+
         public void Validate()
         {
             if( string.IsNullOrWhiteSpace( OutputAssembly ) )
                 OutputAssembly = Utilities.GetSystemGeneratedName() + ".dll";
             else if( !OutputAssembly.EndsWith( ".dll", StringComparison.OrdinalIgnoreCase ) )
                 OutputAssembly = $"{OutputAssembly}.dll";
+
+            OutputFolder = OutputAssembly.Remove( OutputAssembly.Length - 4, 4 );
+
 
             if( Compiler == null )
             {
@@ -41,7 +47,7 @@ namespace Synapse.Server.Extensibility.Utility
                 Files = new List<string>();
         }
 
-        public void SerializeSample(bool verbose = false)
+        public void SerializeSample(string path, bool verbose = false)
         {
             GeneratorSettings clone = new GeneratorSettings
             {
@@ -52,10 +58,10 @@ namespace Synapse.Server.Extensibility.Utility
                 Files = null
             };
 
-            YamlHelpers.SerializeFile( $"{OutputAssembly}.sample.yaml", verbose ? this : clone, emitDefaultValues: verbose );
+            YamlHelpers.SerializeFile( $"{path}\\{OutputAssembly}.sample.yaml", verbose ? this : clone, emitDefaultValues: verbose );
         }
 
-        public void SerializeMakeFile()
+        public void SerializeMakeFile(string path)
         {
             GeneratorSettings clone = new GeneratorSettings
             {
@@ -66,7 +72,7 @@ namespace Synapse.Server.Extensibility.Utility
                 Files = Files
             };
 
-            YamlHelpers.SerializeFile( $"{OutputAssembly}.yaml", clone );
+            YamlHelpers.SerializeFile( $"{path}\\{OutputAssembly}.make.yaml", clone );
         }
 
         public static GeneratorSettings Deserialize(string path)
