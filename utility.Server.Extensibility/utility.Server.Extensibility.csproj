@@ -7,7 +7,7 @@
     <ProjectGuid>{4EB3E98E-4363-40FD-A6CE-2C93FB14CDC2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Synapse.Server.Extensibility.Utility</RootNamespace>
-    <AssemblyName>MakeAssembly</AssemblyName>
+    <AssemblyName>Synapse.CustomController</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>syn_logo_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,6 +53,7 @@
     <Compile Include="Classes\ApiMethod.cs" />
     <Compile Include="Classes\CompilerSettings.cs" />
     <Compile Include="Classes\Enums\SerializationType.cs" />
+    <Compile Include="Classes\Utilities\ExceptionUtilities.cs" />
     <Compile Include="Classes\Utilities\Utilities.cs" />
     <Compile Include="Classes\Enums\ApiHttpMethod.cs" />
     <Compile Include="Classes\GeneratorSettings.cs" />
@@ -72,6 +76,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="syn_logo_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
