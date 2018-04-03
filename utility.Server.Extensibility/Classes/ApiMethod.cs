@@ -9,6 +9,7 @@ namespace Synapse.Server.Extensibility.Utility
     public class ApiMethod
     {
         public ApiHttpMethod HttpMethod { get; set; } = ApiHttpMethod.Get;
+        public string AuthorizationTopic { get; set; }
         public string Route { get; set; }
         public string ReturnType { get; set; } = "string";
         public string Name { get; set; }
@@ -21,7 +22,7 @@ namespace Synapse.Server.Extensibility.Utility
 
         public string ToClassCode()
         {
-            string code = @"        [Http~~HttpMethod~~]
+            string code = @"~~AuthorizationTopic~~        [Http~~HttpMethod~~]
         [Route( ~~Route~~ )]
         public ~~ReturnType~~ ~~Name~~(~~parms~~)
         {
@@ -48,6 +49,8 @@ namespace Synapse.Server.Extensibility.Utility
             }
             code = Regex.Replace( code, "~~plan~~", plan );
 
+            code = Regex.Replace( code, "~~AuthorizationTopic~~",
+                string.IsNullOrWhiteSpace( AuthorizationTopic ) ? string.Empty : $"        [SynapseCustomAuthorize( \"{AuthorizationTopic}\" )]\r\n" );
             code = Regex.Replace( code, "~~HttpMethod~~", $"{HttpMethod}" );
             code = Regex.Replace( code, "~~Route~~", $"\"{Route}\"" );
             code = Regex.Replace( code, "~~ReturnType~~", ReturnType );
@@ -95,6 +98,7 @@ namespace Synapse.Server.Extensibility.Utility
             ApiMethod sample = new ApiMethod
             {
                 Route = "{interesting}/path",
+                AuthorizationTopic = "MethodTopic",
                 ReturnType = "object",
                 Name = "MyCustomMethod",
                 Parms = "string interesting, string aaa, string bbb, string ccc = \"foo\"",

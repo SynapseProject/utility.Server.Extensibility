@@ -11,6 +11,7 @@ namespace Synapse.Server.Extensibility.Utility
     public class ApiController
     {
         public string Name { get; set; }
+        public string AuthorizationTopic { get; set; }
         public string RoutePrefix { get; set; }
         public bool CreateHelloApiMethod { get; set; } = true;
         public bool CreateWhoAmIApiMethod { get; set; } = true;
@@ -42,6 +43,8 @@ namespace Synapse.Server.Extensibility.Utility
                     ApiMethods.Insert( 0, m );
             }
 
+            code = Regex.Replace( code, "~~AuthorizationTopic~~",
+                string.IsNullOrWhiteSpace( AuthorizationTopic ) ? string.Empty : $"    [SynapseCustomAuthorize( \"{AuthorizationTopic}\" )]\r\n" );
             code = Regex.Replace( code, "~~RoutePrefix~~", $"\"{RoutePrefix}\"" );
             code = Regex.Replace( code, "~~Name~~", Name );
             code = Regex.Replace( code, "~~ApiMethods~~", ApiMethods.ToClassCode() );
@@ -54,7 +57,8 @@ namespace Synapse.Server.Extensibility.Utility
             ApiController sample = new ApiController
             {
                 Name = "Custom",
-                RoutePrefix = "my/route"
+                RoutePrefix = "my/route",
+                AuthorizationTopic = "ApiTopic"
             };
             sample.ApiMethods.Add( ApiMethod.CreateSample() );
 

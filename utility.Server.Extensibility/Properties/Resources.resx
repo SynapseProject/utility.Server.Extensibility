@@ -136,7 +136,7 @@ using Synapse.Services;
 
 namespace Synapse.Custom
 {
-    [RoutePrefix( ~~RoutePrefix~~ )]
+~~AuthorizationTopic~~    [RoutePrefix( ~~RoutePrefix~~ )]
     public class ~~Name~~Controller : ApiController
     {
 ~~ApiMethods~~
