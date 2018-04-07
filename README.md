@@ -1,4 +1,65 @@
-# utility.Server.Extensibility
+# Synapse.CustomController Commandline Utility
+
+## Overview
+
+The Synapse.CustomController commandline utility can be used to create a code file and dll for a custom Contoller interface.  The tool provides for a simple "Plan wrapper," but also supports more complex scenarios with custom code.
+
+## Synapse.CustomController.exe
+
+Synapse.CustomController.exe takes a YAML template to create a c# code files and compile them to a dll.  The tool can be executed to create the code files and dll (both), or each task independently.  You may generate a sample .cs and .dll via the 'sample [verbose]' option.  Syntax:
+
+```dos
+C:\Synapse\Controller\Assemblies\Custom>Synapse.CustomController.exe
+Synapse Server Custom Controller Utility
+Syntax: Synapse.CustomController.exe {path to settings file}|sample [verbose]
+        sample: Will generate sample settings file.
+```
+
+### YAML Template: Top-Level Settings
+
+|Parameter|Type/Value|Required|Default Value|Description
+|-|-|-|-|-
+|OutputAssembly|`string`|yes|none; will generate a random name if nothing provided|The filename for the dll to be created.
+|ApiControllers|`List`|yes*|n/a|If using the utility to create c# files, provide the settings below.
+
+### YAML Template: ApiControllers Settings
+
+|Parameter|Type/Value|Required|Default Value|Description
+|-|-|-|-|-
+|Name|`string`|yes|none; will generate a random name if nothing provided|Maps to class name in code; must be unique within the dll.
+|AuthorizationTopic|`string`|no|none|Provides a designated point in the code to check authorization as specified in Synapse.Server.config.yaml->Authotization section.
+|RoutePrefix|`string`|yes|none|The URL prefix for all subsequent ApiMethod routes.
+|CreateHelloApiMethod|`bool`|no|true|Creates a "Hello from [Name]Controller, World!" method for simple connectivity testing.
+|CreateWhoAmIApiMethod|`bool`|no|true|Creates a method to return the current security context from underlying Execute Controller.
+|CreateClassFileOnly|`bool`|no|false|Prevents the generation of the controller dll as output - only the class files will be created.
+|ApiMethods|`List`|yes|n/a|The list of methods to be generated.
+
+### YAML Template: ApiMethods Settings
+
+|Parameter|Type/Value|Required|Default Value|Description
+|-|-|-|-|-
+|HttpMethod|`string`, HttpVerb|yes|Get|Get, Put, Post, Delete <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpmethod(v=vs.118).aspx" target="_blank">(See MSDN docs)</a>
+|AuthorizationTopic|`string`|no|none|Provides a designated point in the code to check authorization as specified in Synapse.Server.config.yaml->Authotization section.
+|Route|`string`|yes|none|The specific URL route to the method.
+|ReturnType|`string`|yes|`string`|The Type of the return value of the method.
+|Name|`string`|yes|none; will generate a random name if nothing provided|The name for the method in code.
+|Parms|`string`|no|none|The method parameters that map to the Plan.  Specify parameters for better discoverability of intended method usage through utilities like swagger.
+|PlanName|`string`|yes|none|The Synapse Plan to be executed by the method.
+|ExecuteAsync|`bool`|no|false|Specifies whether the underlying Execute Controller instance will run the Plan synchronously or asynchronously.  If async, the ReturnType must be `long`.
+|CodeBlob|`string`|no|none|A manually coded block to be inserted in the metho between parameter gathering and Plan execution.  Useful for parameter validation.
+|Options|(section)|no|n/a|If executing a Plan sychronously, set values here to override default settings.
+| - Path|`string`|no|Actions[0]:Result:ExitData|Specify the path in the Plan.ResultPlan to the section or value to return when the Plan completes.
+| - SerializationType|`enum`|no|`Json`|Options are: `Yaml = 0, Xml = 1, Json = 2, Html = 3, Unspecified = 4`.  You may provide the string or numeric value.
+| - SetContentType|`bool`|no|true|Sets `ContentType` value in HttpResponse Headers as specified in SerializationType.
+| - PollingIntervalSeconds|`int`|no|1|The time, in seconds, the Execute Controller will poll for Plan completion.
+| - TimeoutSeconds|`int`|no|120|The time, in seconds, before the ExecuteController will stop polling and kill the Plan execution.
+| - NodeRootUrl|`string`|no|none|An alternate Node at which to execute the Plan, other than that which is specified in the Execute Controller's Synapse.Server.config.yaml.
+
+#### Details on how an auto-generated method will capture HttpRequest Parameters
+
+[todo]
+
+
 Commandline tool for creating custom Synapse.Server ApiControllers from YAML templates.
 
 ## Use a template like this:
