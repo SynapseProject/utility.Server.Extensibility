@@ -54,6 +54,18 @@ namespace Synapse.Server.Extensibility.Utility
                 //optionally include the file in the list to be compiled
                 if( !c.CreateClassFileOnly && !gs.Files.Contains( name, StringComparer.OrdinalIgnoreCase ) )
                     gs.Files.Add( name );
+
+                if( c.HasDalApi )
+                {
+                    gs.Files.Add( c.CreateDalApi.File );
+
+                    string dalFile = $"{gs.OutputFolder}\\{c.CreateDalApi.Class}Dal.cs";
+                    File.WriteAllText( dalFile, c.CreateDalApi.DalCode );
+                    gs.Files.Add( dalFile );
+
+                    gs.Compiler.ReferencedAssemblies.AddRange( new string[] { "System.Core.dll", "LiteDB.dll" } );
+                }
+
                 //write the file to disk
                 File.WriteAllText( name, code );
 
@@ -70,7 +82,7 @@ namespace Synapse.Server.Extensibility.Utility
 
                 //write out any warnings/errors
                 foreach( CompilerError err in results.Errors )
-                    Console_WriteLine( $"[{err.IsWarning.FormatString( "Warning", "-Error-" )}: ln {err.Line}/col {err.Column}]  {err.ErrorText}",
+                    Console_WriteLine( $"[{err.IsWarning.FormatString( "Warning", "-Error-" )}: ln {err.Line}/col {err.Column}]  {err.ErrorText}\r\n  in {err.FileName}",
                         err.IsWarning ? ConsoleColor.Yellow : ConsoleColor.Red );
                 Console.WriteLine();
 

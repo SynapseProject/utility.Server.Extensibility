@@ -52,6 +52,7 @@
     <Compile Include="Classes\ApiController.cs" />
     <Compile Include="Classes\ApiMethod.cs" />
     <Compile Include="Classes\CompilerSettings.cs" />
+    <Compile Include="Classes\DalInfo.cs" />
     <Compile Include="Classes\Enums\SerializationType.cs" />
     <Compile Include="Classes\Utilities\ExceptionUtilities.cs" />
     <Compile Include="Classes\Utilities\Utilities.cs" />

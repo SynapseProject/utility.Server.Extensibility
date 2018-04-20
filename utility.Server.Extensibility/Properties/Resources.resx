@@ -139,6 +139,7 @@ namespace Synapse.Custom
 ~~AuthorizationTopic~~    [RoutePrefix( ~~RoutePrefix~~ )]
     public class ~~Name~~Controller : ApiController
     {
+~~DalApiCode~~
 ~~ApiMethods~~
 
         IExecuteController GetExecuteControllerInstance()
@@ -187,6 +188,156 @@ namespace Synapse.Custom
                     planUniqueName: planUniqueName, dryRun: dryRun, requestNumber: requestNumber,
                     path: path, serializationType: serializationType, setContentType: setContentType,
                     pollingIntervalSeconds: pollingIntervalSeconds, timeoutSeconds: timeoutSeconds, nodeRootUrl: nodeRootUrl );
+        }
+    }
+}</value>
+  </data>
+  <data name="DalApiCode" xml:space="preserve">
+    <value>#region DAL API Methods
+        static object _dalConfig = null;
+
+        public ~~class~~Controller()
+        {
+            GetDalConfig();
+        }
+        void GetDalConfig()
+        {
+            if( _dalConfig == null )
+            {
+                string thisAssmName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+                _dalConfig = ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).GetCustomAssemblyConfig( thisAssmName );
+                if( _dalConfig == null )
+                    throw new ArgumentNullException( string.Format( "Could not load config for {0}.", thisAssmName ) );
+            }
+        }
+
+        [HttpGet]
+        [Route( "{id}" )]
+        public ~~class~~ SelectSingle(int id)
+        {
+            return new ~~class~~Dal( _dalConfig ).SelectSingle( id );
+        }
+
+        [HttpGet]
+        [Route( "" )]
+        public IEnumerable&lt;~~class~~&gt; SelectAll()
+        {
+            return new ~~class~~Dal( _dalConfig ).SelectAll();
+        }
+
+        [HttpPost]
+        [Route( "{id}" )]
+        public bool UpsertSingle(int id, [FromBody]~~class~~ item)
+        {
+            return new ~~class~~Dal( _dalConfig ).UpsertSingle( item );
+        }
+
+        [HttpPost]
+        [Route( "" )]
+        public int UpsertList([FromBody]List&lt;~~class~~&gt; items)
+        {
+            return new ~~class~~Dal( _dalConfig ).UpsertList( items );
+        }
+
+        [HttpDelete]
+        [Route( "{id}" )]
+        public int Delete(long id)
+        {
+            return new ~~class~~Dal( _dalConfig ).Delete( id );
+        }
+        #endregion</value>
+  </data>
+  <data name="DalCode" xml:space="preserve">
+    <value>using System;
+using System.Collections.Generic;
+
+using LiteDB;
+
+using Synapse.Core.Utilities;
+
+namespace Synapse.Custom
+{
+    public class ~~class~~Dal
+    {
+        private static string _db = @"~~class~~.db";
+        private const string __table = "~~class~~List";
+
+        public ~~class~~Dal() { }
+        public ~~class~~Dal(object rawConfig)
+        {
+            if( rawConfig == null )
+                throw new ArgumentNullException( "rawConfig" );
+
+            _db = DatabaseConnectionConfig.FromObject( rawConfig ).ConnectionString;
+        }
+
+
+        public ~~class~~ SelectSingle(long id)
+        {
+            using( var db = new LiteDatabase( _db ) )
+            {
+                var list = db.GetCollection&lt;~~class~~&gt;( __table );
+                list.EnsureIndex( x =&gt; x.Id );
+
+                return list.FindOne( x =&gt; x.Id == id ); ;
+            }
+        }
+
+        public IEnumerable&lt;~~class~~&gt; SelectAll()
+        {
+            using( var db = new LiteDatabase( _db ) )
+            {
+                var list = db.GetCollection&lt;~~class~~&gt;( __table );
+                return list.FindAll();
+            }
+        }
+
+        public bool UpsertSingle(string json)
+        {
+            ~~class~~ ~~class~~ = ~~class~~.FromSingle( json );
+            return UpsertSingle( ~~class~~ );
+        }
+        public bool UpsertSingle(~~class~~ item)
+        {
+            using( var db = new LiteDatabase( _db ) )
+            {
+                var list = db.GetCollection&lt;~~class~~&gt;( __table );
+                return list.Upsert( item );
+            }
+        }
+
+        public int UpsertList(string json)
+        {
+            List&lt;~~class~~&gt; ~~class~~Items = ~~class~~.FromList( json );
+            return UpsertList( ~~class~~Items );
+        }
+        public int UpsertList(List&lt;~~class~~&gt; items)
+        {
+            using( var db = new LiteDatabase( _db ) )
+            {
+                var list = db.GetCollection&lt;~~class~~&gt;( __table );
+                return list.Upsert( items );
+            }
+        }
+
+        public int Delete(long id)
+        {
+            using( var db = new LiteDatabase( _db ) )
+            {
+                var list = db.GetCollection&lt;~~class~~&gt;( __table );
+                return list.Delete( x =&gt; x.Id == id ); ;
+            }
+        }
+    }
+
+    public class DatabaseConnectionConfig
+    {
+        public string ConnectionString { get; set; }
+
+        public static DatabaseConnectionConfig FromObject(object rawConfig)
+        {
+            string config = YamlHelpers.Serialize( rawConfig );
+            return YamlHelpers.Deserialize&lt;DatabaseConnectionConfig&gt;( config );
         }
     }
 }</value>

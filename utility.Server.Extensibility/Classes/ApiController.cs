@@ -16,6 +16,8 @@ namespace Synapse.Server.Extensibility.Utility
         public bool CreateHelloApiMethod { get; set; } = true;
         public bool CreateWhoAmIApiMethod { get; set; } = true;
         public bool CreateClassFileOnly { get; set; } = false;
+        public DalInfo CreateDalApi { get; set; }
+        public bool HasDalApi{ get { return CreateDalApi != null; } }
         public List<ApiMethod> ApiMethods { get; set; } = new List<ApiMethod>();
 
         public virtual string ToClassCode()
@@ -42,6 +44,14 @@ namespace Synapse.Server.Extensibility.Utility
                 if( !ApiMethods.Exists( a => a.Name == m.Name ) )
                     ApiMethods.Insert( 0, m );
             }
+
+            string dalApiCode = string.Empty;
+            if( HasDalApi )
+            {
+                dalApiCode = Regex.Replace( Resources.DalApiCode, "~~class~~", CreateDalApi.Class ) + "\r\n";
+                CreateDalApi.DalCode = Regex.Replace( Resources.DalCode, "~~class~~", CreateDalApi.Class );
+            }
+            code = Regex.Replace( code, "~~DalApiCode~~", dalApiCode );
 
             code = Regex.Replace( code, "~~AuthorizationTopic~~",
                 string.IsNullOrWhiteSpace( AuthorizationTopic ) ? string.Empty : $"    [SynapseCustomAuthorize( \"{AuthorizationTopic}\" )]\r\n" );

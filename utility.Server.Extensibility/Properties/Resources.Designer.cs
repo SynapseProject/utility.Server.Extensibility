@@ -83,5 +83,56 @@ namespace Synapse.Server.Extensibility.Utility.Properties {
                 return ResourceManager.GetString("ControllerCode", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #region DAL API Methods
+        ///        static object _dalConfig = null;
+        ///
+        ///        public ~~class~~Controller()
+        ///        {
+        ///            GetDalConfig();
+        ///        }
+        ///        void GetDalConfig()
+        ///        {
+        ///            if( _dalConfig == null )
+        ///            {
+        ///                string thisAssmName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        ///                _dalConfig = ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).GetCustomAssemblyConfig( thisAssmName );
+        ///                [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DalApiCode {
+            get {
+                return ResourceManager.GetString("DalApiCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to using System;
+        ///using System.Collections.Generic;
+        ///
+        ///using LiteDB;
+        ///
+        ///using Synapse.Core.Utilities;
+        ///
+        ///namespace Synapse.Custom
+        ///{
+        ///    public class ~~class~~Dal
+        ///    {
+        ///        private static string _db = @&quot;~~class~~.db&quot;;
+        ///        private const string __table = &quot;~~class~~List&quot;;
+        ///
+        ///        public ~~class~~Dal() { }
+        ///        public ~~class~~Dal(object rawConfig)
+        ///        {
+        ///            if( rawConfig == null )
+        ///                throw new ArgumentNullException( &quot;rawConfig&quot; );
+        ///
+        ///            _db = DatabaseConnect [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DalCode {
+            get {
+                return ResourceManager.GetString("DalCode", resourceCulture);
+            }
+        }
     }
 }
