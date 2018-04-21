@@ -193,10 +193,10 @@ namespace Synapse.Custom
 }</value>
   </data>
   <data name="DalApiCode" xml:space="preserve">
-    <value>#region DAL API Methods
+    <value>        #region DAL API Methods
         static object _dalConfig = null;
 
-        public ~~class~~Controller()
+        public ~~Name~~Controller()
         {
             GetDalConfig();
         }
@@ -245,7 +245,9 @@ namespace Synapse.Custom
         {
             return new ~~class~~Dal( _dalConfig ).Delete( id );
         }
-        #endregion</value>
+        #endregion
+
+</value>
   </data>
   <data name="DalCode" xml:space="preserve">
     <value>using System;

@@ -6,7 +6,7 @@ namespace Synapse.Server.Extensibility.Utility
     public class GeneratorSettings
     {
         public string OutputAssembly { get; set; }
-        public bool CreateMakeFile { get; set; }
+        public bool CreateMakeFile { get; set; } = true;
         public CompilerSettings Compiler { get; set; }
         public List<string> Files { get; set; } = new List<string>();
         public List<ApiController> ApiControllers { get; set; } = new List<ApiController>();

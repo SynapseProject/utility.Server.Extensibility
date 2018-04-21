@@ -85,10 +85,10 @@ namespace Synapse.Server.Extensibility.Utility.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #region DAL API Methods
+        ///   Looks up a localized string similar to         #region DAL API Methods
         ///        static object _dalConfig = null;
         ///
-        ///        public ~~class~~Controller()
+        ///        public ~~Name~~Controller()
         ///        {
         ///            GetDalConfig();
         ///        }
@@ -98,7 +98,7 @@ namespace Synapse.Server.Extensibility.Utility.Properties {
         ///            {
         ///                string thisAssmName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
         ///                _dalConfig = ExtensibilityUtility.GetExecuteControllerInstance( null, null, null ).GetCustomAssemblyConfig( thisAssmName );
-        ///                [rest of string was truncated]&quot;;.
+        ///         [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DalApiCode {
             get {

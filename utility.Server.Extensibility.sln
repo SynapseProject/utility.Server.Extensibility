@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{20528696-33D1-4828-AC3D-3B0764F699A7}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\AssemblyInfo.xml = scripts\AssemblyInfo.xml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
