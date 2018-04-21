@@ -50,7 +50,7 @@ namespace Synapse.Server.Extensibility.Utility
             foreach( ApiController c in gs.ApiControllers )
             {
                 string code = c.ToClassCode();
-                string name = $"{gs.OutputFolder}\\{c.Name}.cs";
+                string name = $"{gs.OutputFolder}\\{c.Name}Controller.cs";
                 //optionally include the file in the list to be compiled
                 if( !c.CreateClassFileOnly && !gs.Files.Contains( name, StringComparer.OrdinalIgnoreCase ) )
                     gs.Files.Add( name );

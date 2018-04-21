@@ -294,11 +294,6 @@ namespace Synapse.Custom
             }
         }
 
-        public bool UpsertSingle(string json)
-        {
-            ~~class~~ ~~class~~ = ~~class~~.FromSingle( json );
-            return UpsertSingle( ~~class~~ );
-        }
         public bool UpsertSingle(~~class~~ item)
         {
             using( var db = new LiteDatabase( _db ) )
@@ -308,11 +303,6 @@ namespace Synapse.Custom
             }
         }
 
-        public int UpsertList(string json)
-        {
-            List&lt;~~class~~&gt; ~~class~~Items = ~~class~~.FromList( json );
-            return UpsertList( ~~class~~Items );
-        }
         public int UpsertList(List&lt;~~class~~&gt; items)
         {
             using( var db = new LiteDatabase( _db ) )
