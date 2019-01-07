@@ -24,7 +24,7 @@ namespace Synapse.Server.Extensibility.Utility
             if( converter != null )
                 builder.WithTypeConverter( converter );
 
-            serializer = builder.Build();
+            serializer = builder.Build() as Serializer;
 
             serializer.Serialize( tw, data );
         }
@@ -69,7 +69,7 @@ namespace Synapse.Server.Extensibility.Utility
                 if( converter != null )
                     builder.WithTypeConverter( converter );
 
-                Deserializer deserializer = builder.Build();
+                Deserializer deserializer = builder.Build() as Deserializer;
                 return deserializer.Deserialize<T>( reader );
             }
         }
@@ -84,7 +84,7 @@ namespace Synapse.Server.Extensibility.Utility
             if( converter != null )
                 builder.WithTypeConverter( converter );
 
-            Deserializer deserializer = builder.Build();
+            Deserializer deserializer = builder.Build() as Deserializer;
             return deserializer.Deserialize<T>( reader );
         }
 
@@ -101,7 +101,7 @@ namespace Synapse.Server.Extensibility.Utility
                 if( converter != null )
                     builder.WithTypeConverter( converter );
 
-                Deserializer deserializer = builder.Build();
+                Deserializer deserializer = builder.Build() as Deserializer;
                 ssc = deserializer.Deserialize<T>( reader );
             }
             return ssc;
