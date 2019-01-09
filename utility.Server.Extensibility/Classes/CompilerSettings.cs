@@ -15,6 +15,7 @@ namespace Synapse.Server.Extensibility.Utility
         public List<string> ReferencedAssemblies { get; set; } = new List<string>();
         public List<string> LinkedResources { get; set; }
         public List<string> EmbeddedResources { get; }
+        public string CompilerVersion { get; set; } = "v4.0";
 
         public CompilerParameters ToCompilerParameters(string outputAssembly)
         {

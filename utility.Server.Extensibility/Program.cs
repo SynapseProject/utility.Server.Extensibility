@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -77,7 +78,7 @@ namespace Synapse.Server.Extensibility.Utility
             if( gs.Files.Count > 0 )
             {
                 //make the assm
-                CompilerResults results = new CSharpCodeProvider().CompileAssemblyFromFile(
+                CompilerResults results = new CSharpCodeProvider( new Dictionary<string, string> { { "CompilerVersion", gs.Compiler.CompilerVersion } } ).CompileAssemblyFromFile(
                     gs.Compiler.ToCompilerParameters( $"{gs.OutputFolder}\\{gs.OutputAssembly}" ), gs.Files.ToArray() );
 
                 //write out any warnings/errors
